@@ -6,8 +6,13 @@ set -e
 SLEEP_SEC=300
 
 
-if [ "$REMOTE_PATH" == "" ]; then
-  echo "error: REMOTE_PATH not set"
+if [ "$RCLONE_SOURCE_PATH" == "" ]; then
+  echo "error: RCLONE_SOURCE_PATH not set"
+  exit 1
+fi
+
+if [ "$RCLONE_DEST_PATH" == "" ]; then
+  echo "error: RCLONE_DEST_PATH not set"
   exit 1
 fi
 
@@ -19,13 +24,9 @@ if [ "$UMASK" != "" ]; then
   umask $UMASK
 fi
 
-if [ "$RCLONE_RESYNC" == "true" ]; then
-  rclone bisync $REMOTE_PATH /data --resync
-fi
-
 # Add crontab
 while true
 do
-  rclone bisync $REMOTE_PATH /data
+  rclone sync $RCLONE_SOURCE_PATH $RCLONE_DEST_PATH
   sleep $SLEEP_SEC 
 done
